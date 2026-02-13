@@ -36,7 +36,6 @@
 
         [dir="rtl"] { font-family: var(--font-family-ar); }
 
-        /* Ramadan Decoratives - Positioned in Front */
         .decorations {
             position: absolute;
             top: 0;
@@ -44,7 +43,7 @@
             height: 150px;
             pointer-events: none;
             overflow: hidden;
-            z-index: 100; /* Keeps lanterns in front */
+            z-index: 100;
         }
 
         .lantern {
@@ -604,7 +603,6 @@
         });
     }
 
-    // FIX: ADDED CLICK HANDLER FOR "MY RESERVATION" BUTTON
     document.getElementById('btn-goto-check').onclick = () => {
         showPage('page-check');
     };

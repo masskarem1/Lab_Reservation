@@ -44,7 +44,7 @@
             height: 150px;
             pointer-events: none;
             overflow: hidden;
-            z-index: 100; /* High z-index to stay in front */
+            z-index: 100; /* Keeps lanterns in front */
         }
 
         .lantern {
@@ -58,7 +58,6 @@
             animation: swing 3.5s ease-in-out infinite;
         }
 
-        /* Framing the logo - avoiding overlap */
         .lantern-left { left: 8%; animation-delay: 0s; }
         .lantern-right { right: 8%; animation-delay: 1.7s; }
 
@@ -104,7 +103,6 @@
             z-index: 1;
         }
 
-        /* Crescent Moon - Moved to top left to be clear of logo center */
         .crescent-header {
             position: absolute;
             top: 20px;
@@ -112,10 +110,9 @@
             fill: var(--accent-color);
             opacity: 0.3;
             width: 45px;
-            z-index: 101; /* Above header background */
+            z-index: 101;
         }
 
-        /* Small Star Decorative */
         .star-header {
             position: absolute;
             top: 25px;
@@ -251,10 +248,6 @@
             font-size: 0.85rem;
             transition: all 0.2s;
         }
-        .back-button:hover, .lang-toggle:hover, .check-button:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
         .actions-row { display: flex; justify-content: space-between; margin-top: 20px; }
 
         .form-message {
@@ -302,7 +295,6 @@
 
 <div class="app-container">
     <div class="decorations">
-        <!-- Lanterns on extreme sides -->
         <svg class="lantern lantern-left" viewBox="0 0 100 100">
             <path d="M50 0 L50 20 M30 20 L70 20 L80 50 L70 80 L30 80 L20 50 Z M40 35 L60 35 M40 50 L60 50 M40 65 L60 65 M50 80 L50 100" stroke="currentColor" stroke-width="4" fill="none"/>
         </svg>
@@ -314,7 +306,6 @@
     <!-- PAGE 1: CHOOSE DAY -->
     <section id="page-welcome" class="page active">
         <header class="page-header">
-            <!-- Moon moved to corner to avoid logo covering it -->
             <svg class="crescent-header" viewBox="0 0 100 100">
                 <path d="M50 10 A40 40 0 1 0 90 50 A30 30 0 1 1 50 10 Z" />
             </svg>
@@ -526,7 +517,6 @@
 
     async function fetchData() {
         if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS_SCRIPT_URL")) return;
-
         document.getElementById('loading-overlay').style.display = 'flex';
         try {
             const resp = await fetch(SCRIPT_URL, {
@@ -613,6 +603,11 @@
             container.appendChild(card);
         });
     }
+
+    // FIX: ADDED CLICK HANDLER FOR "MY RESERVATION" BUTTON
+    document.getElementById('btn-goto-check').onclick = () => {
+        showPage('page-check');
+    };
 
     document.getElementById('reserve-form').onsubmit = async (e) => {
         e.preventDefault();

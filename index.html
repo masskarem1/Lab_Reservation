@@ -36,6 +36,7 @@
 
         [dir="rtl"] { font-family: var(--font-family-ar); }
 
+        /* Ramadan Decoratives - High Z-Index to stay in front */
         .decorations {
             position: absolute;
             top: 0;
@@ -139,8 +140,14 @@
         .page-header-subtitle {
             font-size: 0.95rem;
             color: var(--text-muted);
-            margin: 8px 0;
+            margin: 4px 0;
             font-weight: 500;
+        }
+        .course-code {
+            font-weight: 700;
+            color: var(--accent-dark);
+            display: block;
+            margin: 4px 0;
         }
         .room-badge {
             display: inline-block;
@@ -247,10 +254,6 @@
             font-size: 0.85rem;
             transition: all 0.2s;
         }
-        .back-button:hover, .lang-toggle:hover, .check-button:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
         .actions-row { display: flex; justify-content: space-between; margin-top: 20px; }
 
         .form-message {
@@ -318,6 +321,8 @@
             <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" class="page-header-logo" alt="Logo">
             <h1 class="page-header-title" data-key="headerTitle">Ramadan Lab Alternatives</h1>
             <p class="page-header-subtitle" data-key="headerSubtitle">For IT Students (5PM-7PM Sessions)</p>
+            <!-- Course Code Added Here -->
+            <span class="course-code" data-key="courseCode">Course Code: PHY102</span>
             <div class="room-badge" data-key="roomLabel">Room: 604 LB BS</div>
             <div class="actions-row">
                 <button class="check-button" id="btn-goto-check" data-key="btnCheck">My Reservation</button>
@@ -437,9 +442,6 @@
 </div>
 
 <script>
-    // ==========================================
-    // CONFIGURATION
-    // ==========================================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_U0_EdJjSglrx1ZxdW2N8nP3vAcKFWqfvVBMVbqFuoGEytCKmfCX0iG8Lc63r7J2Pfg/exec";
     const CAPACITY_PER_SLOT = 10; 
     
@@ -456,6 +458,7 @@
             pageTitle: "Ramadan Lab Reservation",
             headerTitle: "Ramadan Lab Alternatives",
             headerSubtitle: "For IT Students (5PM-7PM Sessions)",
+            courseCode: "Course Code: PHY102",
             roomLabel: "Room: 604 LB BS",
             btnCheck: "My Reservation",
             step1Title: "Step 1: Choose a Day",
@@ -480,6 +483,7 @@
             pageTitle: "حجز مختبرات رمضان",
             headerTitle: "بدائل مختبرات رمضان",
             headerSubtitle: "لطلاب تقنية المعلومات (فترات 5-7 مساءً)",
+            courseCode: "رمز المادة: PHY102",
             roomLabel: "القاعة: 604 LB BS",
             btnCheck: "حجزي الحالي",
             step1Title: "الخطوة 1: اختر اليوم",

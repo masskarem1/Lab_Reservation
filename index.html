@@ -109,7 +109,7 @@
             fill: var(--accent-color);
             opacity: 0.3;
             width: 45px;
-            z-index: 101;
+            z-index: 101; 
         }
 
         .star-header {
@@ -246,6 +246,10 @@
             cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.2s;
+        }
+        .back-button:hover, .lang-toggle:hover, .check-button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
         }
         .actions-row { display: flex; justify-content: space-between; margin-top: 20px; }
 
@@ -433,6 +437,9 @@
 </div>
 
 <script>
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_U0_EdJjSglrx1ZxdW2N8nP3vAcKFWqfvVBMVbqFuoGEytCKmfCX0iG8Lc63r7J2Pfg/exec";
     const CAPACITY_PER_SLOT = 10; 
     
@@ -466,7 +473,8 @@
             updateTitle: "Change My Slot",
             labelUpdateDay: "New Day",
             labelUpdateSlot: "New Time",
-            btnUpdate: "Update Reservation"
+            btnUpdate: "Update Reservation",
+            dailyTotal: "Daily Capacity"
         },
         ar: {
             pageTitle: "حجز مختبرات رمضان",
@@ -489,7 +497,8 @@
             updateTitle: "تعديل حجزي",
             labelUpdateDay: "اليوم الجديد",
             labelUpdateSlot: "الفترة الجديدة",
-            btnUpdate: "تحديث الحجز"
+            btnUpdate: "تحديث الحجز",
+            dailyTotal: "إجمالي السعة لليوم"
         }
     };
 
@@ -553,7 +562,7 @@
                     <div class="capacity-bar-container">
                         <div class="capacity-label">
                             <span>${translations[currentLang].reserved}: ${totalReserved}</span>
-                            <span>${totalCapacity} Max</span>
+                            <span>${translations[currentLang].dailyTotal}: ${totalCapacity}</span>
                         </div>
                         <div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div>
                     </div>
@@ -593,7 +602,7 @@
                     <div class="capacity-bar-container">
                          <div class="capacity-label">
                             <span>${translations[currentLang].reserved}: ${reserved}</span>
-                            <span>${capacity} Max</span>
+                            <span>Limit: ${capacity}</span>
                         </div>
                         <div class="progress-track"><div class="progress-fill ${isFull ? 'full' : ''}" style="width:${percent}%"></div></div>
                     </div>

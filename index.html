@@ -5,96 +5,531 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-key="pageTitle">Ramadan Lab Alternative Reservation</title>
     <style>
-        /* ... Keep all CSS variables and styles from your original code ... */
         :root {
-            --primary-color: #0f766e; /* Teal for Ramadan theme */
-            --primary-light: #ccfbf1;
-            /* ... other variables ... */
+            --primary-color: #0d9488; /* Teal-600 */
+            --primary-dark: #0f766e;
+            --primary-light: #f0fdfa;
+            --accent-color: #d97706; /* Amber-600 */
+            --secondary-color: #374151;
+            --text-dark: #1f2937;
+            --text-light: #f9fafb;
+            --text-muted: #6b7280;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --border-color: #e5e7eb;
+            --card-bg: #ffffff;
+            --body-bg: #f8fafc;
+            --font-family: "Inter", -apple-system, sans-serif;
+            --font-family-ar: "Tahoma", sans-serif;
         }
-        /* ... Keep all other CSS unchanged ... */
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--body-bg);
+            margin: 0;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        [dir="rtl"] { font-family: var(--font-family-ar); }
+
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--body-bg);
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .page.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            padding: 30px 20px;
+            text-align: center;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--primary-color);
+            border-radius: 0 0 24px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .page-header-logo {
+            height: 90px;
+            margin-bottom: 12px;
+        }
+        .page-header-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+        .page-header-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 8px 0;
+        }
+        .room-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 1px solid var(--primary-color);
+        }
+
+        .page-content { padding: 0 20px 30px 20px; }
+        .step-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .card-clickable { cursor: pointer; }
+        .card-clickable:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .card-header { padding: 20px; text-align: center; }
+        .card-title { font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--text-dark); }
+        .card-body { padding: 0 20px 20px 20px; }
+
+        .capacity-bar-container { margin-top: 12px; }
+        .capacity-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .progress-track {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.5s ease;
+        }
+        .progress-fill.full { background: var(--error-color); }
+
+        /* Forms */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .form-button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .form-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .back-button, .lang-toggle, .check-button {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .actions-row { display: flex; justify-content: space-between; margin-top: 15px; }
+
+        .form-message {
+            display: none;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .form-message.success { background: #d1fae5; color: #065f46; }
+        .form-message.error { background: #fee2e2; color: #991b1b; }
+
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body dir="ltr">
-    <div class="app-container">
-        <section id="page-welcome" class="page active">
-            <header class="page-header">
-                <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" alt="University Logo" class="page-header-logo">
-                <h1 class="page-header-title">Ramadan Lab Alternatives</h1>
-                <p class="page-header-subtitle"><strong>Room:</strong> 604 LB BS (Capacity: 10 per slot)</p>
-                <div class="course-info">
-                    <p>For students in 5:00 PM - 7:00 PM sessions</p>
-                </div>
-                <div class="page-header-actions">
-                    <button class="action-button" id="btn-goto-check">Check My Slot</button>
-                    <button class="lang-toggle" id="lang-toggle-welcome">En / ع</button>
-                </div>
-            </header>
-            <main class="page-content">
-                <h2 class="step1-title">Step 1: Choose a Day</h2>
-                <div id="location-cards-container">
-                    </div>
-            </main>
-        </section>
+<body>
 
-        <section id="page-periods" class="page">
-            <header class="page-header">
-                <div class="page-header-actions" style="margin-top: 0;">
-                    <button class="back-button" id="btn-periods-back">←</button>
-                    <button class="lang-toggle" id="lang-toggle-periods">En / ع</button>
-                </div>
-                <h1 id="periods-page-title" class="page-header-title"></h1>
-                <p class="page-header-subtitle">Step 2: Choose a Time Slot</p>
-            </header>
-            <main class="page-content">
-                <div id="period-cards-container"></div>
-            </main>
-        </section>
+<div id="loading-overlay"><div class="spinner"></div></div>
 
-        <section id="page-reserve" class="page">
-            <header class="page-header">
-                <div class="page-header-actions" style="margin-top: 0;">
-                    <button class="back-button" id="btn-reserve-back">←</button>
+<div class="app-container">
+    <!-- PAGE 1: CHOOSE DAY -->
+    <section id="page-welcome" class="page active">
+        <header class="page-header">
+            <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" class="page-header-logo" alt="Logo">
+            <h1 class="page-header-title" data-key="headerTitle">Ramadan Lab Alternatives</h1>
+            <p class="page-header-subtitle" data-key="headerSubtitle">For IT Students (5PM-7PM Sessions)</p>
+            <div class="room-badge" data-key="roomLabel">Room: 604 LB BS</div>
+            <div class="actions-row">
+                <button class="check-button" id="btn-goto-check" data-key="btnCheck">My Reservation</button>
+                <button class="lang-toggle" onclick="toggleLanguage()">En / ع</button>
+            </div>
+        </header>
+        <main class="page-content">
+            <div class="step-title">
+                <span data-key="step1Title">Step 1: Choose a Day</span>
+            </div>
+            <div id="day-cards-container"></div>
+        </main>
+    </section>
+
+    <!-- PAGE 2: CHOOSE SLOT -->
+    <section id="page-slots" class="page">
+        <header class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="back-button" onclick="showPage('page-welcome')">←</button>
+                <button class="lang-toggle" onclick="toggleLanguage()">En / ع</button>
+            </div>
+            <h1 id="selected-day-name" class="page-header-title" style="margin-top:15px"></h1>
+            <p class="page-header-subtitle" data-key="step2Subtitle">Step 2: Choose a Time Slot</p>
+        </header>
+        <main class="page-content">
+            <div id="slot-cards-container"></div>
+        </main>
+    </section>
+
+    <!-- PAGE 3: RESERVE -->
+    <section id="page-reserve" class="page">
+        <header class="page-header">
+            <button class="back-button" onclick="showPage('page-slots')" style="float:left">←</button>
+            <h1 class="page-header-title" data-key="confirmTitle" style="display:inline-block">Confirm Booking</h1>
+        </header>
+        <main class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <div id="booking-summary" style="font-weight: 700; color: var(--primary-dark);"></div>
                 </div>
-                <h1 class="page-header-title">Step 3: Confirm Reservation</h1>
-            </header>
-            <main class="page-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Your Selection</h2>
-                        <p class="card-subtitle" id="reserve-details"></p>
-                    </div>
-                    <div class="card-body">
-                        <form id="reserve-form">
-                            <div class="form-group">
-                                <label for="student-id">Student ID</label>
-                                <input type="text" id="student-id" placeholder="Enter ID" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="student-email">Email Address</label>
-                                <input type="email" id="student-email" placeholder="Email for confirmation" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="student-password">Password</label>
-                                <input type="password" id="student-password" placeholder="Create 4-digit password" required>
-                            </div>
-                            <button type="submit" class="form-button" id="btn-confirm-reserve">Book This Slot</button>
-                            <div id="reserve-message" class="form-message"></div>
-                        </form>
+                <div class="card-body">
+                    <form id="reserve-form">
+                        <div class="form-group">
+                            <label data-key="labelId">Student ID</label>
+                            <input type="text" id="student-id" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-key="labelEmail">Email Address</label>
+                            <input type="email" id="student-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-key="labelPass">Password (min 4 chars)</label>
+                            <input type="password" id="student-pass" required>
+                        </div>
+                        <button type="submit" class="form-button" id="btn-submit" data-key="btnConfirm">Book My Seat</button>
+                        <div id="reserve-msg" class="form-message"></div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <!-- PAGE 4: CHECK -->
+    <section id="page-check" class="page">
+        <header class="page-header">
+            <button class="back-button" onclick="showPage('page-welcome')" style="float:left">←</button>
+            <h1 class="page-header-title" data-key="checkTitle">Check Reservation</h1>
+        </header>
+        <main class="page-content">
+            <form id="check-form" class="card card-body" style="padding-top:20px">
+                <div class="form-group">
+                    <label data-key="labelId">Student ID</label>
+                    <input type="text" id="check-id" required>
+                </div>
+                <div class="form-group">
+                    <label data-key="labelPass">Password</label>
+                    <input type="password" id="check-pass" required>
+                </div>
+                <button type="submit" class="form-button" data-key="btnCheckAction">Check My Booking</button>
+                <div id="check-msg" class="form-message"></div>
+            </form>
+            <div id="check-results" class="card card-body" style="display:none; padding-top:20px">
+                <h3 id="res-name" style="margin-top:0"></h3>
+                <p><strong>Day:</strong> <span id="res-day"></span></p>
+                <p><strong>Time:</strong> <span id="res-time"></span></p>
+                <p><strong>Room:</strong> 604 LB BS</p>
+            </div>
+        </main>
+    </section>
+</div>
+
+<script>
+    const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL"; // REPLACE THIS after deploying Code.gs
+    const DAYS = ["Saturday", "Monday", "Wednesday", "Thursday"];
+    const SLOTS = ["9:00 am-10:20 am", "10:20 am-11:40 am", "11:40 am-1:00 pm", "1:00 pm-2:20 pm"];
+
+    let currentLang = 'en';
+    let appData = null;
+    let selectedDay = "";
+    let selectedSlot = "";
+
+    const translations = {
+        en: {
+            pageTitle: "Ramadan Lab Reservation",
+            headerTitle: "Ramadan Lab Alternatives",
+            headerSubtitle: "For IT Students (5PM-7PM Sessions)",
+            roomLabel: "Room: 604 LB BS",
+            btnCheck: "My Reservation",
+            step1Title: "Step 1: Choose a Day",
+            step2Subtitle: "Step 2: Choose a Time Slot",
+            confirmTitle: "Confirm Booking",
+            labelId: "Student ID",
+            labelEmail: "Email Address",
+            labelPass: "Password (min 4 chars)",
+            btnConfirm: "Book My Seat",
+            checkTitle: "Check Reservation",
+            btnCheckAction: "Check My Booking",
+            reserved: "Reserved",
+            available: "Available",
+            full: "Full"
+        },
+        ar: {
+            pageTitle: "حجز مختبرات رمضان",
+            headerTitle: "بدائل مختبرات رمضان",
+            headerSubtitle: "لطلاب تقنية المعلومات (فترات 5-7 مساءً)",
+            roomLabel: "القاعة: 604 LB BS",
+            btnCheck: "حجزي الحالي",
+            step1Title: "الخطوة 1: اختر اليوم",
+            step2Subtitle: "الخطوة 2: اختر الفترة الزمنية",
+            confirmTitle: "تأكيد الحجز",
+            labelId: "الرقم الجامعي",
+            labelEmail: "البريد الإلكتروني",
+            labelPass: "كلمة المرور (4 أرقام)",
+            btnConfirm: "تأكيد الحجز",
+            checkTitle: "الاستعلام عن الحجز",
+            btnCheckAction: "استعلام",
+            reserved: "محجوز",
+            available: "متاح",
+            full: "مكتمل"
+        }
+    };
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('reserve-msg').style.display = 'none';
+        document.getElementById('check-msg').style.display = 'none';
+        if(id === 'page-welcome') document.getElementById('btn-submit').disabled = false;
+    }
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'en' ? 'ar' : 'en';
+        document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        const lang = translations[currentLang];
+        document.querySelectorAll('[data-key]').forEach(el => {
+            el.textContent = lang[el.getAttribute('data-key')];
+        });
+        renderDays();
+        if(selectedDay) renderSlots(selectedDay);
+    }
+
+    async function fetchData() {
+        document.getElementById('loading-overlay').style.display = 'flex';
+        try {
+            const resp = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'getCapacity' })
+            });
+            const result = await resp.json();
+            appData = result.data;
+            renderDays();
+        } catch (e) { console.error(e); }
+        document.getElementById('loading-overlay').style.display = 'none';
+    }
+
+    function renderDays() {
+        const container = document.getElementById('day-cards-container');
+        container.innerHTML = '';
+        DAYS.forEach(day => {
+            const dayData = appData ? appData[day] : null;
+            const totalReserved = dayData ? Object.values(dayData).reduce((a,b) => a+b, 0) : 0;
+            const totalCapacity = 40; // 4 slots * 10
+            const percent = (totalReserved / totalCapacity) * 100;
+
+            const card = document.createElement('div');
+            card.className = 'card card-clickable';
+            card.onclick = () => {
+                selectedDay = day;
+                document.getElementById('selected-day-name').textContent = day;
+                renderSlots(day);
+                showPage('page-slots');
+            };
+            card.innerHTML = `
+                <div class="card-header">
+                    <h2 class="card-title">${day}</h2>
+                    <div class="capacity-bar-container">
+                        <div class="capacity-label">
+                            <span>${translations[currentLang].reserved}: ${totalReserved}</span>
+                            <span>${totalCapacity} Max</span>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div>
                     </div>
                 </div>
-            </main>
-        </section>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderSlots(day) {
+        const container = document.getElementById('slot-cards-container');
+        container.innerHTML = '';
+        const dayData = appData ? appData[day] : {};
         
-        </div>
+        SLOTS.forEach(slot => {
+            const reserved = dayData[slot] || 0;
+            const capacity = 10;
+            const percent = (reserved / capacity) * 100;
+            const isFull = reserved >= capacity;
 
-    <script>
-        // --- CONFIGURATION ---
-        const SCRIPT_URL = "YOUR_NEW_DEPLOYMENT_URL";
-        const PERIODS = ["9:00 am-10:20 am", "10:20 am-11:40 am", "11:40 am-1:00 pm", "1:00 pm-2:20 pm"];
-        const DAYS = ["Saturday", "Monday", "Wednesday", "Thursday"];
+            const card = document.createElement('div');
+            card.className = 'card' + (isFull ? '' : ' card-clickable');
+            if(!isFull) {
+                card.onclick = () => {
+                    selectedSlot = slot;
+                    document.getElementById('booking-summary').textContent = `${selectedDay} | ${slot}`;
+                    showPage('page-reserve');
+                };
+            }
+            card.innerHTML = `
+                <div class="card-body" style="padding-top:20px; opacity: ${isFull ? 0.6 : 1}">
+                    <div style="display:flex; justify-content:space-between; align-items:center">
+                        <h3 style="margin:0">${slot}</h3>
+                        ${isFull ? `<span style="color:var(--error-color); font-weight:700">${translations[currentLang].full}</span>` : ''}
+                    </div>
+                    <div class="capacity-bar-container">
+                         <div class="capacity-label">
+                            <span>${translations[currentLang].reserved}: ${reserved}</span>
+                            <span>10 Max</span>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill ${isFull ? 'full' : ''}" style="width:${percent}%"></div></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
 
-        // Update your translations dictionary to match Ramadan terms
-        // ... (Keep the logic for fetchReservationData and Navigation) ...
-    </script>
+    document.getElementById('reserve-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-submit');
+        const msg = document.getElementById('reserve-msg');
+        btn.disabled = true;
+        document.getElementById('loading-overlay').style.display = 'flex';
+
+        const payload = {
+            action: 'submitReservation',
+            studentId: document.getElementById('student-id').value,
+            email: document.getElementById('student-email').value,
+            password: document.getElementById('student-pass').value,
+            day: selectedDay,
+            slot: selectedSlot
+        };
+
+        try {
+            const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const res = await resp.json();
+            msg.textContent = res.message;
+            msg.className = `form-message ${res.status}`;
+            msg.style.display = 'block';
+            if(res.status === 'success') fetchData();
+            else btn.disabled = false;
+        } catch (e) { 
+            msg.textContent = "Error connecting to server."; 
+            msg.className = "form-message error";
+            msg.style.display = "block";
+            btn.disabled = false;
+        }
+        document.getElementById('loading-overlay').style.display = 'none';
+    };
+
+    document.getElementById('check-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('check-msg');
+        const resDiv = document.getElementById('check-results');
+        resDiv.style.display = 'none';
+        document.getElementById('loading-overlay').style.display = 'flex';
+
+        const payload = {
+            action: 'checkReservation',
+            id: document.getElementById('check-id').value,
+            password: document.getElementById('check-pass').value
+        };
+
+        try {
+            const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const res = await resp.json();
+            if(res.status === 'success') {
+                document.getElementById('res-name').textContent = res.data.name;
+                document.getElementById('res-day').textContent = res.data.day;
+                document.getElementById('res-time').textContent = res.data.slot;
+                resDiv.style.display = 'block';
+                msg.style.display = 'none';
+            } else {
+                msg.textContent = res.message;
+                msg.className = "form-message error";
+                msg.style.display = "block";
+            }
+        } catch (e) { msg.textContent = "Error."; msg.style.display = "block"; }
+        document.getElementById('loading-overlay').style.display = 'none';
+    };
+
+    window.onload = fetchData;
+</script>
 </body>
 </html>

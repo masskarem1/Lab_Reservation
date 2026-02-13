@@ -310,8 +310,8 @@
 </div>
 
 <script>
-    // UPDATE: Use the Apps Script URL you provided earlier
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec";
+    // UPDATED SCRIPT URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_U0_EdJjSglrx1ZxdW2N8nP3vAcKFWqfvVBMVbqFuoGEytCKmfCX0iG8Lc63r7J2Pfg/exec";
     const DAYS = ["Saturday", "Monday", "Wednesday", "Thursday"];
     const SLOTS = ["9:00 am-10:20 am", "10:20 am-11:40 am", "11:40 am-1:00 pm", "1:00 pm-2:20 pm"];
 
@@ -381,12 +381,7 @@
     }
 
     async function fetchData() {
-        // Safety check to avoid fetch error if URL is placeholder
-        if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS_SCRIPT_URL")) {
-            console.error("Critical: SCRIPT_URL is not configured properly.");
-            document.getElementById('loading-overlay').style.display = 'none';
-            return;
-        }
+        if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS_SCRIPT_URL")) return;
 
         document.getElementById('loading-overlay').style.display = 'flex';
         try {
@@ -397,9 +392,7 @@
             const result = await resp.json();
             appData = result.data;
             renderDays();
-        } catch (e) { 
-            console.error("Fetch failed:", e); 
-        }
+        } catch (e) { console.error(e); }
         document.getElementById('loading-overlay').style.display = 'none';
     }
 

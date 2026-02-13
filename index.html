@@ -310,7 +310,8 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL"; // REPLACE THIS after deploying Code.gs
+    // UPDATE: Use the Apps Script URL you provided earlier
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0UwMPYQ-DtVZEZ9EH3sBZW-y1KFQU7UT5TdwUgC1MrptesUmE8F4gDMZpKlBygXFBw/exec";
     const DAYS = ["Saturday", "Monday", "Wednesday", "Thursday"];
     const SLOTS = ["9:00 am-10:20 am", "10:20 am-11:40 am", "11:40 am-1:00 pm", "1:00 pm-2:20 pm"];
 
@@ -380,6 +381,13 @@
     }
 
     async function fetchData() {
+        // Safety check to avoid fetch error if URL is placeholder
+        if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS_SCRIPT_URL")) {
+            console.error("Critical: SCRIPT_URL is not configured properly.");
+            document.getElementById('loading-overlay').style.display = 'none';
+            return;
+        }
+
         document.getElementById('loading-overlay').style.display = 'flex';
         try {
             const resp = await fetch(SCRIPT_URL, {
@@ -389,12 +397,15 @@
             const result = await resp.json();
             appData = result.data;
             renderDays();
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error("Fetch failed:", e); 
+        }
         document.getElementById('loading-overlay').style.display = 'none';
     }
 
     function renderDays() {
         const container = document.getElementById('day-cards-container');
+        if (!container) return;
         container.innerHTML = '';
         DAYS.forEach(day => {
             const dayData = appData ? appData[day] : null;
@@ -428,6 +439,7 @@
 
     function renderSlots(day) {
         const container = document.getElementById('slot-cards-container');
+        if (!container) return;
         container.innerHTML = '';
         const dayData = appData ? appData[day] : {};
         

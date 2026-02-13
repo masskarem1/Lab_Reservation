@@ -143,13 +143,14 @@
         /* Forms */
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; }
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-sizing: border-box;
             font-size: 1rem;
+            background: white;
         }
         .form-button {
             width: 100%;
@@ -205,6 +206,13 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        #update-reservation-form {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+        }
     </style>
 </head>
 <body>
@@ -280,7 +288,7 @@
         </main>
     </section>
 
-    <!-- PAGE 4: CHECK -->
+    <!-- PAGE 4: CHECK & UPDATE -->
     <section id="page-check" class="page">
         <header class="page-header">
             <button class="back-button" onclick="showPage('page-welcome')" style="float:left">←</button>
@@ -299,19 +307,49 @@
                 <button type="submit" class="form-button" data-key="btnCheckAction">Check My Booking</button>
                 <div id="check-msg" class="form-message"></div>
             </form>
+
             <div id="check-results" class="card card-body" style="display:none; padding-top:20px">
                 <h3 id="res-name" style="margin-top:0"></h3>
                 <p><strong>Day:</strong> <span id="res-day"></span></p>
                 <p><strong>Time:</strong> <span id="res-time"></span></p>
                 <p><strong>Room:</strong> 604 LB BS</p>
+
+                <!-- NEW: Update Form Section -->
+                <div id="update-reservation-form">
+                    <h4 style="border-top: 1px solid #eee; padding-top:15px" data-key="updateTitle">Change My Slot</h4>
+                    <div class="form-group">
+                        <label data-key="labelUpdateDay">New Day</label>
+                        <select id="update-day">
+                            <option value="Saturday">Saturday</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-key="labelUpdateSlot">New Time</label>
+                        <select id="update-slot">
+                            <option value="9:00 am-10:20 am">9:00 am-10:20 am</option>
+                            <option value="10:20 am-11:40 am">10:20 am-11:40 am</option>
+                            <option value="11:40 am-1:00 pm">11:40 am-1:00 pm</option>
+                            <option value="1:00 pm-2:20 pm">1:00 pm-2:20 pm</option>
+                        </select>
+                    </div>
+                    <button class="form-button" id="btn-confirm-update" data-key="btnUpdate">Update Reservation</button>
+                    <div id="update-msg" class="form-message"></div>
+                </div>
             </div>
         </main>
     </section>
 </div>
 
 <script>
-    // UPDATED SCRIPT URL
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_U0_EdJjSglrx1ZxdW2N8nP3vAcKFWqfvVBMVbqFuoGEytCKmfCX0iG8Lc63r7J2Pfg/exec";
+    const CAPACITY_PER_SLOT = 10; 
+    
     const DAYS = ["Saturday", "Monday", "Wednesday", "Thursday"];
     const SLOTS = ["9:00 am-10:20 am", "10:20 am-11:40 am", "11:40 am-1:00 pm", "1:00 pm-2:20 pm"];
 
@@ -338,7 +376,11 @@
             btnCheckAction: "Check My Booking",
             reserved: "Reserved",
             available: "Available",
-            full: "Full"
+            full: "Full",
+            updateTitle: "Change My Slot",
+            labelUpdateDay: "New Day",
+            labelUpdateSlot: "New Time",
+            btnUpdate: "Update Reservation"
         },
         ar: {
             pageTitle: "حجز مختبرات رمضان",
@@ -357,7 +399,11 @@
             btnCheckAction: "استعلام",
             reserved: "محجوز",
             available: "متاح",
-            full: "مكتمل"
+            full: "مكتمل",
+            updateTitle: "تعديل حجزي",
+            labelUpdateDay: "اليوم الجديد",
+            labelUpdateSlot: "الفترة الجديدة",
+            btnUpdate: "تحديث الحجز"
         }
     };
 
@@ -366,6 +412,7 @@
         document.getElementById(id).classList.add('active');
         document.getElementById('reserve-msg').style.display = 'none';
         document.getElementById('check-msg').style.display = 'none';
+        document.getElementById('update-msg').style.display = 'none';
         if(id === 'page-welcome') document.getElementById('btn-submit').disabled = false;
     }
 
@@ -403,7 +450,7 @@
         DAYS.forEach(day => {
             const dayData = appData ? appData[day] : null;
             const totalReserved = dayData ? Object.values(dayData).reduce((a,b) => a+b, 0) : 0;
-            const totalCapacity = 40; // 4 slots * 10
+            const totalCapacity = SLOTS.length * CAPACITY_PER_SLOT; 
             const percent = (totalReserved / totalCapacity) * 100;
 
             const card = document.createElement('div');
@@ -438,7 +485,7 @@
         
         SLOTS.forEach(slot => {
             const reserved = dayData[slot] || 0;
-            const capacity = 10;
+            const capacity = CAPACITY_PER_SLOT;
             const percent = (reserved / capacity) * 100;
             const isFull = reserved >= capacity;
 
@@ -460,7 +507,7 @@
                     <div class="capacity-bar-container">
                          <div class="capacity-label">
                             <span>${translations[currentLang].reserved}: ${reserved}</span>
-                            <span>10 Max</span>
+                            <span>${capacity} Max</span>
                         </div>
                         <div class="progress-track"><div class="progress-fill ${isFull ? 'full' : ''}" style="width:${percent}%"></div></div>
                     </div>
@@ -507,7 +554,9 @@
         e.preventDefault();
         const msg = document.getElementById('check-msg');
         const resDiv = document.getElementById('check-results');
+        const updateDiv = document.getElementById('update-reservation-form');
         resDiv.style.display = 'none';
+        updateDiv.style.display = 'none';
         document.getElementById('loading-overlay').style.display = 'flex';
 
         const payload = {
@@ -524,6 +573,7 @@
                 document.getElementById('res-day').textContent = res.data.day;
                 document.getElementById('res-time').textContent = res.data.slot;
                 resDiv.style.display = 'block';
+                updateDiv.style.display = 'block';
                 msg.style.display = 'none';
             } else {
                 msg.textContent = res.message;
@@ -531,6 +581,38 @@
                 msg.style.display = "block";
             }
         } catch (e) { msg.textContent = "Error."; msg.style.display = "block"; }
+        document.getElementById('loading-overlay').style.display = 'none';
+    };
+
+    // NEW: Handle Update Logic
+    document.getElementById('btn-confirm-update').onclick = async () => {
+        const msg = document.getElementById('update-msg');
+        const btn = document.getElementById('btn-confirm-update');
+        btn.disabled = true;
+        document.getElementById('loading-overlay').style.display = 'flex';
+
+        const payload = {
+            action: 'updateReservation',
+            id: document.getElementById('check-id').value,
+            password: document.getElementById('check-pass').value,
+            newDay: document.getElementById('update-day').value,
+            newSlot: document.getElementById('update-slot').value
+        };
+
+        try {
+            const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const res = await resp.json();
+            msg.textContent = res.message;
+            msg.className = `form-message ${res.status}`;
+            msg.style.display = 'block';
+            if(res.status === 'success') {
+                document.getElementById('res-day').textContent = payload.newDay;
+                document.getElementById('res-time').textContent = payload.newSlot;
+                fetchData();
+            }
+        } catch (e) { msg.textContent = "Update Error."; msg.className = "form-message error"; msg.style.display = "block"; }
+        
+        btn.disabled = false;
         document.getElementById('loading-overlay').style.display = 'none';
     };
 

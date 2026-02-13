@@ -36,7 +36,6 @@
 
         [dir="rtl"] { font-family: var(--font-family-ar); }
 
-        /* Ramadan Decoratives - High Z-Index to stay in front */
         .decorations {
             position: absolute;
             top: 0;
@@ -110,7 +109,7 @@
             fill: var(--accent-color);
             opacity: 0.3;
             width: 45px;
-            z-index: 101; 
+            z-index: 101;
         }
 
         .star-header {
@@ -140,7 +139,7 @@
         .page-header-subtitle {
             font-size: 0.95rem;
             color: var(--text-muted);
-            margin: 4px 0;
+            margin: 8px 0;
             font-weight: 500;
         }
         .course-code {
@@ -211,7 +210,7 @@
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
-            transition: width 0.8s ease;
+            transition: width: 0.8s ease;
         }
         .progress-fill.full { background: var(--error-color); }
 
@@ -321,7 +320,6 @@
             <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" class="page-header-logo" alt="Logo">
             <h1 class="page-header-title" data-key="headerTitle">Ramadan Lab Alternatives</h1>
             <p class="page-header-subtitle" data-key="headerSubtitle">For IT Students (5PM-7PM Sessions)</p>
-            <!-- Course Code Added Here -->
             <span class="course-code" data-key="courseCode">Course Code: PHY102</span>
             <div class="room-badge" data-key="roomLabel">Room: 604 LB BS</div>
             <div class="actions-row">
@@ -369,14 +367,6 @@
                             <label data-key="labelId">Student ID</label>
                             <input type="text" id="student-id" placeholder="Enter your ID" required>
                         </div>
-                        <div class="form-group">
-                            <label data-key="labelEmail">Email Address</label>
-                            <input type="email" id="student-email" placeholder="email@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label data-key="labelPass">Password (min 4 chars)</label>
-                            <input type="password" id="student-pass" placeholder="Create a password" required>
-                        </div>
                         <button type="submit" class="form-button" id="btn-submit" data-key="btnConfirm">Book My Seat</button>
                         <div id="reserve-msg" class="form-message"></div>
                     </form>
@@ -396,10 +386,6 @@
                 <div class="form-group">
                     <label data-key="labelId">Student ID</label>
                     <input type="text" id="check-id" required>
-                </div>
-                <div class="form-group">
-                    <label data-key="labelPass">Password</label>
-                    <input type="password" id="check-pass" required>
                 </div>
                 <button type="submit" class="form-button" data-key="btnCheckAction">Check My Booking</button>
                 <div id="check-msg" class="form-message"></div>
@@ -442,6 +428,9 @@
 </div>
 
 <script>
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_U0_EdJjSglrx1ZxdW2N8nP3vAcKFWqfvVBMVbqFuoGEytCKmfCX0iG8Lc63r7J2Pfg/exec";
     const CAPACITY_PER_SLOT = 10; 
     
@@ -465,19 +454,16 @@
             step2Subtitle: "Step 2: Choose a Time Slot",
             confirmTitle: "Confirm Booking",
             labelId: "Student ID",
-            labelEmail: "Email Address",
-            labelPass: "Password (min 4 chars)",
             btnConfirm: "Book My Seat",
             checkTitle: "Check Reservation",
             btnCheckAction: "Check My Booking",
             reserved: "Reserved",
-            available: "Available",
+            dailyTotal: "Daily Capacity",
             full: "Full",
             updateTitle: "Change My Slot",
             labelUpdateDay: "New Day",
             labelUpdateSlot: "New Time",
-            btnUpdate: "Update Reservation",
-            dailyTotal: "Daily Capacity"
+            btnUpdate: "Update Reservation"
         },
         ar: {
             pageTitle: "حجز مختبرات رمضان",
@@ -490,19 +476,16 @@
             step2Subtitle: "الخطوة 2: اختر الفترة الزمنية",
             confirmTitle: "تأكيد الحجز",
             labelId: "الرقم الجامعي",
-            labelEmail: "البريد الإلكتروني",
-            labelPass: "كلمة المرور (4 أرقام)",
             btnConfirm: "تأكيد الحجز",
             checkTitle: "الاستعلام عن الحجز",
             btnCheckAction: "استعلام",
             reserved: "محجوز",
-            available: "متاح",
+            dailyTotal: "إجمالي السعة لليوم",
             full: "مكتمل",
             updateTitle: "تعديل حجزي",
             labelUpdateDay: "اليوم الجديد",
             labelUpdateSlot: "الفترة الجديدة",
-            btnUpdate: "تحديث الحجز",
-            dailyTotal: "إجمالي السعة لليوم"
+            btnUpdate: "تحديث الحجز"
         }
     };
 
@@ -527,18 +510,34 @@
         if(selectedDay) renderSlots(selectedDay);
     }
 
+    // UPDATED: Fixed fetch logic for Apps Script environment
+    async function apiCall(payload) {
+        try {
+            const resp = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(payload)
+            });
+            if (!resp.ok) throw new Error(`HTTP Error: ${resp.status}`);
+            return await resp.json();
+        } catch (e) {
+            console.error("API Error:", e);
+            throw e;
+        }
+    }
+
     async function fetchData() {
         if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS_SCRIPT_URL")) return;
         document.getElementById('loading-overlay').style.display = 'flex';
         try {
-            const resp = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'getCapacity' })
-            });
-            const result = await resp.json();
+            const result = await apiCall({ action: 'getCapacity' });
             appData = result.data;
             renderDays();
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error("Failed to load data:", e); 
+            // Optional: display error to user
+        }
         document.getElementById('loading-overlay').style.display = 'none';
     }
 
@@ -627,25 +626,20 @@
         btn.disabled = true;
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        const payload = {
-            action: 'submitReservation',
-            studentId: document.getElementById('student-id').value,
-            email: document.getElementById('student-email').value,
-            password: document.getElementById('student-pass').value,
-            day: selectedDay,
-            slot: selectedSlot
-        };
-
         try {
-            const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            const res = await resp.json();
+            const res = await apiCall({
+                action: 'submitReservation',
+                studentId: document.getElementById('student-id').value,
+                day: selectedDay,
+                slot: selectedSlot
+            });
             msg.textContent = res.message;
             msg.className = `form-message ${res.status}`;
             msg.style.display = 'block';
             if(res.status === 'success') fetchData();
             else btn.disabled = false;
         } catch (e) { 
-            msg.textContent = "Error connecting to server."; 
+            msg.textContent = "Connection error. Ensure the script is deployed correctly."; 
             msg.className = "form-message error";
             msg.style.display = "block";
             btn.disabled = false;
@@ -662,15 +656,11 @@
         updateDiv.style.display = 'none';
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        const payload = {
-            action: 'checkReservation',
-            id: document.getElementById('check-id').value,
-            password: document.getElementById('check-pass').value
-        };
-
         try {
-            const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            const res = await resp.json();
+            const res = await apiCall({
+                action: 'checkReservation',
+                id: document.getElementById('check-id').value
+            });
             if(res.status === 'success') {
                 document.getElementById('res-name').textContent = res.data.name;
                 document.getElementById('res-day').textContent = res.data.day;
@@ -683,7 +673,7 @@
                 msg.className = "form-message error";
                 msg.style.display = "block";
             }
-        } catch (e) { msg.textContent = "Error."; msg.style.display = "block"; }
+        } catch (e) { msg.textContent = "Error communicating with server."; msg.style.display = "block"; }
         document.getElementById('loading-overlay').style.display = 'none';
     };
 
@@ -693,23 +683,19 @@
         btn.disabled = true;
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        const payload = {
-            action: 'updateReservation',
-            id: document.getElementById('check-id').value,
-            password: document.getElementById('check-pass').value,
-            newDay: document.getElementById('update-day').value,
-            newSlot: document.getElementById('update-slot').value
-        };
-
         try {
-            const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            const res = await resp.json();
+            const res = await apiCall({
+                action: 'updateReservation',
+                id: document.getElementById('check-id').value,
+                newDay: document.getElementById('update-day').value,
+                newSlot: document.getElementById('update-slot').value
+            });
             msg.textContent = res.message;
             msg.className = `form-message ${res.status}`;
             msg.style.display = 'block';
             if(res.status === 'success') {
-                document.getElementById('res-day').textContent = payload.newDay;
-                document.getElementById('res-time').textContent = payload.newSlot;
+                document.getElementById('res-day').textContent = document.getElementById('update-day').value;
+                document.getElementById('res-time').textContent = document.getElementById('update-slot').value;
                 fetchData();
             }
         } catch (e) { msg.textContent = "Update Error."; msg.className = "form-message error"; msg.style.display = "block"; }

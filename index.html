@@ -32,6 +32,7 @@
             margin: 0;
             color: var(--text-dark);
             overflow-x: hidden;
+            font-size: 1.1rem; /* Increased base font size */
         }
 
         [dir="rtl"] { font-family: var(--font-family-ar); }
@@ -91,7 +92,7 @@
         }
 
         .page-header {
-            padding: 55px 20px 30px; 
+            padding: 60px 20px 35px; 
             text-align: center;
             background: var(--card-bg);
             border-bottom: 4px solid var(--accent-color);
@@ -123,13 +124,13 @@
         }
 
         .page-header-logo {
-            height: 85px;
-            margin-bottom: 12px;
+            height: 90px;
+            margin-bottom: 15px;
             position: relative;
             z-index: 2;
         }
         .page-header-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* Increased */
             font-weight: 900;
             color: var(--primary-dark);
             margin: 0;
@@ -137,38 +138,39 @@
             letter-spacing: -0.5px;
         }
         .page-header-subtitle {
-            font-size: 0.95rem;
+            font-size: 1.1rem; /* Increased */
             color: var(--text-muted);
-            margin: 8px 0;
-            font-weight: 500;
+            margin: 10px 0;
+            font-weight: 600;
         }
         .course-code {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent-dark);
             display: block;
-            margin: 4px 0;
+            margin: 6px 0;
+            font-size: 1.2rem; /* Increased */
         }
         .room-badge {
             display: inline-block;
             background: var(--primary-light);
             color: var(--primary-dark);
-            padding: 6px 16px;
+            padding: 8px 20px;
             border-radius: 99px;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 1rem; /* Increased */
             border: 2px solid var(--primary-color);
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .page-content { padding: 0 20px 30px 20px; }
         .step-title {
             font-weight: 800;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.3rem; /* Increased */
+            margin-bottom: 25px;
             color: var(--secondary-color);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .step-title::before {
             content: "★";
@@ -179,66 +181,68 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card-clickable { cursor: pointer; border-left: 4px solid transparent; }
+        .card-clickable { cursor: pointer; border-left: 6px solid transparent; }
         .card-clickable:hover {
             transform: scale(1.02);
-            border-left: 4px solid var(--accent-color);
+            border-left: 6px solid var(--accent-color);
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
-        .card-header { padding: 24px; text-align: center; }
-        .card-title { font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-dark); }
-        .card-body { padding: 0 24px 24px 24px; }
+        .card-header { padding: 28px; text-align: center; }
+        .card-title { font-size: 1.45rem; font-weight: 800; margin: 0; color: var(--text-dark); }
+        .card-body { padding: 0 28px 28px 28px; }
 
-        .capacity-bar-container { margin-top: 15px; }
+        .capacity-bar-container { margin-top: 20px; }
         .capacity-label {
             display: flex;
             justify-content: space-between;
-            font-size: 0.85rem;
+            font-size: 1rem; /* Increased */
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .progress-track {
-            height: 10px;
+            height: 12px;
             background: #f1f5f9;
-            border-radius: 5px;
+            border-radius: 6px;
             overflow: hidden;
         }
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
-            transition: width: 0.8s ease;
+            transition: width 0.8s ease;
         }
         .progress-fill.full { background: var(--error-color); }
 
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; }
+        .form-group { margin-bottom: 22px; }
+        .form-group label { display: block; font-weight: 800; margin-bottom: 10px; font-size: 1.1rem; }
         .form-group input, .form-group select {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border: 2px solid var(--border-color);
             border-radius: 12px;
             box-sizing: border-box;
-            font-size: 1rem;
+            font-size: 1.2rem; /* Increased input font */
             background: white;
             transition: border-color 0.2s;
+            font-weight: 600;
         }
         .form-group input:focus { border-color: var(--primary-color); outline: none; }
         
         .form-button {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 12px;
             font-weight: 800;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.3rem; /* Increased button font */
             transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2);
         }
         .form-button:active { transform: scale(0.98); }
         .form-button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -246,25 +250,31 @@
         .back-button, .lang-toggle, .check-button {
             background: white;
             border: 2px solid var(--border-color);
-            padding: 10px 18px;
+            padding: 12px 22px;
             border-radius: 12px;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 1rem; /* Increased button font */
             cursor: pointer;
-            font-size: 0.85rem;
             transition: all 0.2s;
         }
-        .actions-row { display: flex; justify-content: space-between; margin-top: 20px; }
+        .back-button:hover, .lang-toggle:hover, .check-button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-dark);
+            background: var(--primary-light);
+        }
+        .actions-row { display: flex; justify-content: space-between; margin-top: 25px; }
 
         .form-message {
             display: none;
-            padding: 14px;
-            margin-top: 15px;
+            padding: 18px;
+            margin-top: 20px;
             border-radius: 12px;
             text-align: center;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 1.1rem;
         }
-        .form-message.success { background: #d1fae5; color: #065f46; border: 1px solid #059669; }
-        .form-message.error { background: #fee2e2; color: #991b1b; border: 1px solid #dc2626; }
+        .form-message.success { background: #d1fae5; color: #065f46; border: 2px solid #059669; }
+        .form-message.error { background: #fee2e2; color: #991b1b; border: 2px solid #dc2626; }
 
         #loading-overlay {
             position: fixed;
@@ -277,10 +287,10 @@
             backdrop-filter: blur(4px);
         }
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--primary-light);
-            border-top: 5px solid var(--accent-dark);
+            width: 60px;
+            height: 60px;
+            border: 6px solid var(--primary-light);
+            border-top: 6px solid var(--accent-dark);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -288,10 +298,14 @@
 
         #update-reservation-form {
             display: none;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 2px dashed var(--border-color);
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 3px dashed var(--border-color);
         }
+
+        #check-results h3 { font-size: 1.6rem; margin-bottom: 15px; }
+        #check-results p { font-size: 1.2rem; margin: 8px 0; }
+        #booking-summary { font-size: 1.3rem; }
     </style>
 </head>
 <body>
@@ -359,7 +373,7 @@
         <main class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <div id="booking-summary" style="font-weight: 800; color: var(--primary-dark); font-size: 1.1rem;"></div>
+                    <div id="booking-summary" style="font-weight: 800; color: var(--primary-dark);"></div>
                 </div>
                 <div class="card-body">
                     <form id="reserve-form">
@@ -382,25 +396,25 @@
             <h1 class="page-header-title" data-key="checkTitle">Check Reservation</h1>
         </header>
         <main class="page-content">
-            <form id="check-form" class="card card-body" style="padding-top:20px">
+            <form id="check-form" class="card card-body" style="padding-top:25px">
                 <div class="form-group">
                     <label data-key="labelId">Student ID</label>
-                    <input type="text" id="check-id" required>
+                    <input type="text" id="check-id" placeholder="Enter your ID" required>
                 </div>
                 <button type="submit" class="form-button" data-key="btnCheckAction">Check My Booking</button>
                 <div id="check-msg" class="form-message"></div>
             </form>
 
-            <div id="check-results" class="card card-body" style="display:none; padding-top:20px">
+            <div id="check-results" class="card card-body" style="display:none; padding-top:25px">
                 <h3 id="res-name" style="margin-top:0; color:var(--primary-dark)"></h3>
-                <div style="background: var(--primary-light); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                    <p style="margin: 5px 0;"><strong>Day:</strong> <span id="res-day"></span></p>
-                    <p style="margin: 5px 0;"><strong>Time:</strong> <span id="res-time"></span></p>
-                    <p style="margin: 5px 0;"><strong>Room:</strong> 604 LB BS</p>
+                <div style="background: var(--primary-light); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                    <p style="margin: 8px 0;"><strong>Day:</strong> <span id="res-day"></span></p>
+                    <p style="margin: 8px 0;"><strong>Time:</strong> <span id="res-time"></span></p>
+                    <p style="margin: 8px 0;"><strong>Room:</strong> 604 LB BS</p>
                 </div>
 
                 <div id="update-reservation-form">
-                    <h4 style="border-top: 1px solid #eee; padding-top:15px" data-key="updateTitle">Change My Slot</h4>
+                    <h4 style="border-top: 3px solid #eee; padding-top:20px; font-size:1.4rem" data-key="updateTitle">Change My Slot</h4>
                     <div class="form-group">
                         <label data-key="labelUpdateDay">New Day</label>
                         <select id="update-day">
@@ -510,7 +524,6 @@
         if(selectedDay) renderSlots(selectedDay);
     }
 
-    // UPDATED: Fixed fetch logic for Apps Script environment
     async function apiCall(payload) {
         try {
             const resp = await fetch(SCRIPT_URL, {
@@ -534,10 +547,7 @@
             const result = await apiCall({ action: 'getCapacity' });
             appData = result.data;
             renderDays();
-        } catch (e) { 
-            console.error("Failed to load data:", e); 
-            // Optional: display error to user
-        }
+        } catch (e) { console.error(e); }
         document.getElementById('loading-overlay').style.display = 'none';
     }
 
@@ -597,7 +607,7 @@
                 };
             }
             card.innerHTML = `
-                <div class="card-body" style="padding-top:20px; opacity: ${isFull ? 0.6 : 1}">
+                <div class="card-body" style="padding-top:25px; opacity: ${isFull ? 0.6 : 1}">
                     <div style="display:flex; justify-content:space-between; align-items:center">
                         <h3 style="margin:0">${slot}</h3>
                         ${isFull ? `<span style="color:var(--error-color); font-weight:700">${translations[currentLang].full}</span>` : ''}
@@ -639,7 +649,7 @@
             if(res.status === 'success') fetchData();
             else btn.disabled = false;
         } catch (e) { 
-            msg.textContent = "Connection error. Ensure the script is deployed correctly."; 
+            msg.textContent = "Error connecting to server."; 
             msg.className = "form-message error";
             msg.style.display = "block";
             btn.disabled = false;
@@ -673,7 +683,7 @@
                 msg.className = "form-message error";
                 msg.style.display = "block";
             }
-        } catch (e) { msg.textContent = "Error communicating with server."; msg.style.display = "block"; }
+        } catch (e) { msg.textContent = "Error."; msg.style.display = "block"; }
         document.getElementById('loading-overlay').style.display = 'none';
     };
 

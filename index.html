@@ -9,7 +9,8 @@
             --primary-color: #0d9488; /* Teal-600 */
             --primary-dark: #0f766e;
             --primary-light: #f0fdfa;
-            --accent-color: #d97706; /* Amber-600 */
+            --accent-color: #fbbf24; /* Gold/Amber */
+            --accent-dark: #d97706;
             --secondary-color: #374151;
             --text-dark: #1f2937;
             --text-light: #f9fafb;
@@ -26,12 +27,46 @@
         body {
             font-family: var(--font-family);
             background-color: var(--body-bg);
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px;
             margin: 0;
             color: var(--text-dark);
             overflow-x: hidden;
         }
 
         [dir="rtl"] { font-family: var(--font-family-ar); }
+
+        /* Ramadan Decoratives - Positioned in Front */
+        .decorations {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 150px;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 100; /* High z-index to stay in front */
+        }
+
+        .lantern {
+            position: absolute;
+            top: -5px;
+            width: 45px;
+            height: 70px;
+            fill: var(--accent-dark);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            transform-origin: top center;
+            animation: swing 3.5s ease-in-out infinite;
+        }
+
+        /* Framing the logo - avoiding overlap */
+        .lantern-left { left: 8%; animation-delay: 0s; }
+        .lantern-right { right: 8%; animation-delay: 1.7s; }
+
+        @keyframes swing {
+            0% { transform: rotate(-6deg); }
+            50% { transform: rotate(6deg); }
+            100% { transform: rotate(-6deg); }
+        }
 
         .app-container {
             max-width: 600px;
@@ -40,13 +75,15 @@
             display: flex;
             flex-direction: column;
             background-color: var(--body-bg);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.05);
         }
 
         .page {
             display: none;
             flex-direction: column;
             flex-grow: 1;
-            animation: fadeIn 0.3s ease-out;
+            animation: fadeIn 0.4s ease-out;
         }
         .page.active { display: flex; }
 
@@ -56,152 +93,196 @@
         }
 
         .page-header {
-            padding: 30px 20px;
+            padding: 55px 20px 30px; 
             text-align: center;
             background: var(--card-bg);
-            border-bottom: 2px solid var(--primary-color);
-            border-radius: 0 0 24px 24px;
+            border-bottom: 4px solid var(--accent-color);
+            border-radius: 0 0 30px 30px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 1;
         }
+
+        /* Crescent Moon - Moved to top left to be clear of logo center */
+        .crescent-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            fill: var(--accent-color);
+            opacity: 0.3;
+            width: 45px;
+            z-index: 101; /* Above header background */
+        }
+
+        /* Small Star Decorative */
+        .star-header {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            fill: var(--accent-color);
+            opacity: 0.3;
+            width: 25px;
+            z-index: 101;
+        }
+
         .page-header-logo {
-            height: 90px;
+            height: 85px;
             margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
         }
         .page-header-title {
-            font-size: 1.4rem;
-            font-weight: 800;
+            font-size: 1.5rem;
+            font-weight: 900;
             color: var(--primary-dark);
             margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
         }
         .page-header-subtitle {
             font-size: 0.95rem;
             color: var(--text-muted);
             margin: 8px 0;
+            font-weight: 500;
         }
         .room-badge {
             display: inline-block;
             background: var(--primary-light);
             color: var(--primary-dark);
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 99px;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 0.85rem;
-            border: 1px solid var(--primary-color);
+            border: 2px solid var(--primary-color);
+            margin-top: 10px;
         }
 
         .page-content { padding: 0 20px 30px 20px; }
         .step-title {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 1.1rem;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             color: var(--secondary-color);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+        }
+        .step-title::before {
+            content: "★";
+            color: var(--accent-color);
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 20px;
             margin-bottom: 16px;
             overflow: hidden;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card-clickable { cursor: pointer; }
+        .card-clickable { cursor: pointer; border-left: 4px solid transparent; }
         .card-clickable:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary-color);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            transform: scale(1.02);
+            border-left: 4px solid var(--accent-color);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
-        .card-header { padding: 20px; text-align: center; }
-        .card-title { font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--text-dark); }
-        .card-body { padding: 0 20px 20px 20px; }
+        .card-header { padding: 24px; text-align: center; }
+        .card-title { font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-dark); }
+        .card-body { padding: 0 24px 24px 24px; }
 
-        .capacity-bar-container { margin-top: 12px; }
+        .capacity-bar-container { margin-top: 15px; }
         .capacity-label {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
         .progress-track {
-            height: 8px;
+            height: 10px;
             background: #f1f5f9;
-            border-radius: 4px;
+            border-radius: 5px;
             overflow: hidden;
         }
         .progress-fill {
             height: 100%;
-            background: var(--primary-color);
-            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            transition: width 0.8s ease;
         }
         .progress-fill.full { background: var(--error-color); }
 
-        /* Forms */
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; }
         .form-group input, .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
             box-sizing: border-box;
             font-size: 1rem;
             background: white;
+            transition: border-color 0.2s;
         }
+        .form-group input:focus { border-color: var(--primary-color); outline: none; }
+        
         .form-button {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 700;
+            border-radius: 12px;
+            font-weight: 800;
             cursor: pointer;
             font-size: 1rem;
+            transition: background 0.2s, transform 0.1s;
         }
+        .form-button:active { transform: scale(0.98); }
         .form-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .back-button, .lang-toggle, .check-button {
             background: white;
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
+            border: 2px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
             font-size: 0.85rem;
+            transition: all 0.2s;
         }
-        .actions-row { display: flex; justify-content: space-between; margin-top: 15px; }
+        .back-button:hover, .lang-toggle:hover, .check-button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .actions-row { display: flex; justify-content: space-between; margin-top: 20px; }
 
         .form-message {
             display: none;
-            padding: 12px;
+            padding: 14px;
             margin-top: 15px;
-            border-radius: 8px;
+            border-radius: 12px;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
         }
-        .form-message.success { background: #d1fae5; color: #065f46; }
-        .form-message.error { background: #fee2e2; color: #991b1b; }
+        .form-message.success { background: #d1fae5; color: #065f46; border: 1px solid #059669; }
+        .form-message.error { background: #fee2e2; color: #991b1b; border: 1px solid #dc2626; }
 
         #loading-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.9);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
         }
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--primary-light);
-            border-top: 4px solid var(--primary-color);
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--primary-light);
+            border-top: 5px solid var(--accent-dark);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -209,9 +290,9 @@
 
         #update-reservation-form {
             display: none;
-            margin-top: 20px;
+            margin-top: 25px;
             padding-top: 20px;
-            border-top: 1px dashed var(--border-color);
+            border-top: 2px dashed var(--border-color);
         }
     </style>
 </head>
@@ -220,9 +301,26 @@
 <div id="loading-overlay"><div class="spinner"></div></div>
 
 <div class="app-container">
+    <div class="decorations">
+        <!-- Lanterns on extreme sides -->
+        <svg class="lantern lantern-left" viewBox="0 0 100 100">
+            <path d="M50 0 L50 20 M30 20 L70 20 L80 50 L70 80 L30 80 L20 50 Z M40 35 L60 35 M40 50 L60 50 M40 65 L60 65 M50 80 L50 100" stroke="currentColor" stroke-width="4" fill="none"/>
+        </svg>
+        <svg class="lantern lantern-right" viewBox="0 0 100 100">
+            <path d="M50 0 L50 20 M30 20 L70 20 L80 50 L70 80 L30 80 L20 50 Z M40 35 L60 35 M40 50 L60 50 M40 65 L60 65 M50 80 L50 100" stroke="currentColor" stroke-width="4" fill="none"/>
+        </svg>
+    </div>
+
     <!-- PAGE 1: CHOOSE DAY -->
     <section id="page-welcome" class="page active">
         <header class="page-header">
+            <!-- Moon moved to corner to avoid logo covering it -->
+            <svg class="crescent-header" viewBox="0 0 100 100">
+                <path d="M50 10 A40 40 0 1 0 90 50 A30 30 0 1 1 50 10 Z" />
+            </svg>
+            <svg class="star-header" viewBox="0 0 100 100">
+                <polygon points="50,10 63,38 91,38 68,58 76,86 50,69 24,86 32,58 9,38 37,38" />
+            </svg>
             <img src="https://smartlearning.must.edu.eg/pluginfile.php/1/core_admin/logo/0x200/1715171530/logo.png" class="page-header-logo" alt="Logo">
             <h1 class="page-header-title" data-key="headerTitle">Ramadan Lab Alternatives</h1>
             <p class="page-header-subtitle" data-key="headerSubtitle">For IT Students (5PM-7PM Sessions)</p>
@@ -264,21 +362,21 @@
         <main class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <div id="booking-summary" style="font-weight: 700; color: var(--primary-dark);"></div>
+                    <div id="booking-summary" style="font-weight: 800; color: var(--primary-dark); font-size: 1.1rem;"></div>
                 </div>
                 <div class="card-body">
                     <form id="reserve-form">
                         <div class="form-group">
                             <label data-key="labelId">Student ID</label>
-                            <input type="text" id="student-id" required>
+                            <input type="text" id="student-id" placeholder="Enter your ID" required>
                         </div>
                         <div class="form-group">
                             <label data-key="labelEmail">Email Address</label>
-                            <input type="email" id="student-email" required>
+                            <input type="email" id="student-email" placeholder="email@example.com" required>
                         </div>
                         <div class="form-group">
                             <label data-key="labelPass">Password (min 4 chars)</label>
-                            <input type="password" id="student-pass" required>
+                            <input type="password" id="student-pass" placeholder="Create a password" required>
                         </div>
                         <button type="submit" class="form-button" id="btn-submit" data-key="btnConfirm">Book My Seat</button>
                         <div id="reserve-msg" class="form-message"></div>
@@ -309,12 +407,13 @@
             </form>
 
             <div id="check-results" class="card card-body" style="display:none; padding-top:20px">
-                <h3 id="res-name" style="margin-top:0"></h3>
-                <p><strong>Day:</strong> <span id="res-day"></span></p>
-                <p><strong>Time:</strong> <span id="res-time"></span></p>
-                <p><strong>Room:</strong> 604 LB BS</p>
+                <h3 id="res-name" style="margin-top:0; color:var(--primary-dark)"></h3>
+                <div style="background: var(--primary-light); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                    <p style="margin: 5px 0;"><strong>Day:</strong> <span id="res-day"></span></p>
+                    <p style="margin: 5px 0;"><strong>Time:</strong> <span id="res-time"></span></p>
+                    <p style="margin: 5px 0;"><strong>Room:</strong> 604 LB BS</p>
+                </div>
 
-                <!-- NEW: Update Form Section -->
                 <div id="update-reservation-form">
                     <h4 style="border-top: 1px solid #eee; padding-top:15px" data-key="updateTitle">Change My Slot</h4>
                     <div class="form-group">
@@ -344,9 +443,6 @@
 </div>
 
 <script>
-    // ==========================================
-    // CONFIGURATION
-    // ==========================================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_U0_EdJjSglrx1ZxdW2N8nP3vAcKFWqfvVBMVbqFuoGEytCKmfCX0iG8Lc63r7J2Pfg/exec";
     const CAPACITY_PER_SLOT = 10; 
     
@@ -414,6 +510,7 @@
         document.getElementById('check-msg').style.display = 'none';
         document.getElementById('update-msg').style.display = 'none';
         if(id === 'page-welcome') document.getElementById('btn-submit').disabled = false;
+        window.scrollTo(0,0);
     }
 
     function toggleLanguage() {
@@ -584,7 +681,6 @@
         document.getElementById('loading-overlay').style.display = 'none';
     };
 
-    // NEW: Handle Update Logic
     document.getElementById('btn-confirm-update').onclick = async () => {
         const msg = document.getElementById('update-msg');
         const btn = document.getElementById('btn-confirm-update');
